@@ -13,8 +13,7 @@ interface FlashSaleProduct {
 const flashSaleProducts: FlashSaleProduct[] = [
   { name: "Bare Vanilla Mist", originalPrice: 85, salePrice: 75, image: "/images/IMG_8451.jpg" },
   { name: "Pure Seduction Mist", originalPrice: 85, salePrice: 75, image: "/images/IMG_8002.jpg" },
-  { name: "Bare Vanilla Lotion", originalPrice: 85, salePrice: 75, image: "/images/IMG_6738.jpg" },
-  { name: "Lace Vanilla", originalPrice: 90, salePrice: 80, image: "/images/IMG_6738.jpg" },
+  { name: "Bare Vanilla Lotion", originalPrice: 90, salePrice: 80, image: "/images/IMG_6738.jpg" },
   { name: "Coconut Passion", originalPrice: 85, salePrice: 75, image: "/images/IMG_0468.jpg" },
   { name: "Bare Vanilla Shimmer", originalPrice: 85, salePrice: 75, image: "/images/IMG_1630.jpg" },
 ];

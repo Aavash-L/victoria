@@ -14,16 +14,11 @@ const Products: React.FC<ProductsProps> = ({ onAddProduct }) => {
     { id: "m-ps", name: "Pure Seduction", type: "Mist", price: 85, image: "/images/IMG_8002.jpg" },
     { id: "m-bvs", name: "Bare Vanilla Shimmer", type: "Mist", price: 85, image: "/images/IMG_1630.jpg" },
     { id: "m-cp", name: "Coconut Passion", type: "Mist", price: 85, image: "/images/IMG_0468.jpg" },
-    { id: "m-cps", name: "Coconut Passion Shimmer", type: "Mist", price: 85, image: "/images/IMG_0468.jpg" },
     { id: "m-vl", name: "Vanilla Lace", type: "Mist", price: 85, image: "/images/IMG_8451.jpg" },
   ];
 
   const lotions: (Product & { image: string })[] = [
     { id: "l-bv", name: "Bare Vanilla", type: "Lotion", price: 90, image: "/images/IMG_6738.jpg" },
-    { id: "l-lv", name: "Lace Vanilla", type: "Lotion", price: 90, image: "/images/IMG_6738.jpg" },
-    { id: "l-bvs", name: "Bare Vanilla Shimmer", type: "Lotion", price: 90, image: "/images/IMG_6738.jpg" },
-    { id: "l-cp", name: "Coconut Passion", type: "Lotion", price: 90, image: "/images/IMG_0468.jpg" },
-    { id: "l-vl", name: "Vanilla Lace", type: "Lotion", price: 90, image: "/images/IMG_6738.jpg" },
   ];
 
   const renderProduct = (prod: Product & { image: string }) => (
