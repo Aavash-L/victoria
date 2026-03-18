@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import FlashSale from "@/components/FlashSale";
 import WhyUs from "@/components/WhyUs";
 import Products from "@/components/Products";
 import Trust from "@/components/Trust";
@@ -40,9 +41,10 @@ export default function Home() {
   }, [isOrderPanelOpen, cart.length]);
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-background-custom">
       <Header />
       <Hero />
+      <FlashSale />
       <WhyUs />
       <Products onAddProduct={addToCart} />
       <Trust />
@@ -52,10 +54,10 @@ export default function Home() {
       {cart.length === 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[90%] md:hidden transition-transform active:scale-95">
           <a 
-            href="https://wa.me/5198410034663"
+            href="https://wa.me/51984134663"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-3 bg-[#25D366] text-white py-4 rounded-2xl font-bold shadow-2xl"
+            className="flex items-center justify-center gap-3 bg-[#25D366] text-white py-4 rounded-2xl font-bold shadow-2xl shadow-[#25D366]/30"
           >
             <span className="text-xl">💬</span>
             Ordenar por WhatsApp
