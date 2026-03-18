@@ -23,43 +23,42 @@ const reviews = [
 
 const Reviews = () => {
   return (
-    <section id="reseñas" className="py-24 relative">
-      <div className="absolute inset-0 -z-10 bg-surface/40" />
+    <section id="reseñas" className="py-24 bg-brand-pink-light/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground-custom">
             Lo que dicen nuestras clientas ✨
           </h2>
-          <p className="text-foreground-custom/40">Únete a las más de 200 chicas felices con sus fragancias.</p>
+          <p className="text-foreground-custom/50">Únete a las más de 200 chicas felices con sus fragancias.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {reviews.map((rev, i) => (
-            <div key={i} className="glass-card p-8 rounded-[2rem] flex flex-col justify-between hover:border-brand-pink/20 transition-all duration-300 hover:-translate-y-1">
+            <div key={i} className="bg-white p-8 rounded-[2rem] shadow-sm border border-brand-pink-muted flex flex-col justify-between hover:shadow-lg hover:shadow-brand-pink/10 transition-all duration-300 hover:-translate-y-1">
               <div>
-                <div className="flex gap-1 mb-4">
-                  {[...Array(rev.rating)].map((_, i) => (
-                    <span key={i} className="text-accent-gold">★</span>
+                <div className="flex gap-0.5 mb-4">
+                  {[...Array(rev.rating)].map((_, j) => (
+                    <span key={j} className="text-accent-gold text-lg">★</span>
                   ))}
                 </div>
-                <p className="text-foreground-custom/70 italic mb-6">&quot;{rev.text}&quot;</p>
+                <p className="text-foreground-custom/70 italic mb-6 leading-relaxed">&quot;{rev.text}&quot;</p>
               </div>
               <div className="flex items-center justify-between mt-4">
-                <span className="font-bold text-brand-pink">{rev.name}</span>
-                <span className="text-[10px] uppercase font-bold text-foreground-custom/20">{rev.date}</span>
+                <span className="font-bold text-accent-rose">{rev.name}</span>
+                <span className="text-[10px] uppercase font-bold text-foreground-custom/30">{rev.date}</span>
               </div>
             </div>
           ))}
         </div>
         
         <div className="mt-16 flex justify-center">
-          <div className="inline-flex items-center gap-4 px-6 py-3 glass-card rounded-full">
+          <div className="inline-flex items-center gap-4 px-6 py-3 bg-white rounded-full border border-brand-pink-muted shadow-sm">
             <div className="flex -space-x-3">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="w-8 h-8 rounded-full border-2 border-surface pink-gradient opacity-60" />
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-white pink-gradient" />
               ))}
             </div>
-            <span className="text-sm font-medium text-foreground-custom/50">+200 clientas felices en Lima</span>
+            <span className="text-sm font-medium text-foreground-custom/60">+200 clientas felices en Lima</span>
           </div>
         </div>
       </div>

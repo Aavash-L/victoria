@@ -1,33 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  /* Dark Luxury Palette */
-  --background: #0a0a0f;
-  --foreground: #f5f5f7;
-  --surface: #141420;
-  --surface-light: #1e1e2e;
-  --surface-border: rgba(255, 255, 255, 0.06);
+  --background: #fffbfc;
+  --foreground: #2d1f2d;
   
-  /* Brand Pink Palette */
-  --brand-pink: #ff69b4;
-  --brand-pink-hover: #ff1493;
-  --brand-pink-light: rgba(255, 105, 180, 0.08);
-  --brand-pink-soft: #ffb6c1;
+  /* Pink Palette — soft, feminine, Victoria's Secret inspired */
+  --brand-pink: #e8549a;
+  --brand-pink-hover: #d63d87;
+  --brand-pink-light: #fdf0f5;
+  --brand-pink-soft: #f8c8dc;
+  --brand-pink-muted: #f5e1eb;
   
   /* Accent Colors */
-  --accent-gold: #f0c040;
-  --accent-rose: #ff2d78;
-  --accent-violet: #9b59ff;
+  --accent-gold: #c9a050;
+  --accent-rose: #c4386a;
+  --accent-blush: #f9e4ec;
+  --accent-cream: #fef7f0;
   
   /* System */
-  --card-bg: rgba(20, 20, 32, 0.7);
-  --card-border: rgba(255, 105, 180, 0.12);
-  --glass: rgba(20, 20, 32, 0.6);
-  --glass-border: rgba(255, 255, 255, 0.08);
-
-  /* Sale */
-  --sale-red: #ff3b3b;
-  --sale-glow: rgba(255, 59, 59, 0.3);
+  --card-bg: #ffffff;
+  --card-border: #fce4ec;
+  --sale-red: #e53e6b;
+  --sale-bg: #fff0f3;
 }
 
 @theme inline {
@@ -35,37 +29,34 @@
   --color-brand-pink-hover: var(--brand-pink-hover);
   --color-brand-pink-light: var(--brand-pink-light);
   --color-brand-pink-soft: var(--brand-pink-soft);
+  --color-brand-pink-muted: var(--brand-pink-muted);
   --color-accent-gold: var(--accent-gold);
   --color-accent-rose: var(--accent-rose);
-  --color-accent-violet: var(--accent-violet);
+  --color-accent-blush: var(--accent-blush);
+  --color-accent-cream: var(--accent-cream);
+  --color-sale-red: var(--sale-red);
+  --color-sale-bg: var(--sale-bg);
   
   --color-background-custom: var(--background);
   --color-foreground-custom: var(--foreground);
-  --color-surface: var(--surface);
-  --color-surface-light: var(--surface-light);
-  --color-surface-border: var(--surface-border);
-  --color-card-bg: var(--card-bg);
-  --color-card-border: var(--card-border);
-  --color-glass: var(--glass);
-  --color-glass-border: var(--glass-border);
-  --color-sale-red: var(--sale-red);
 
   --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
-  --animate-shimmer: shimmer 2.5s linear infinite;
+  --animate-shimmer: shimmer 3s linear infinite;
   --animate-bounce-slow: bounce-slow 3s ease-in-out infinite;
   --animate-fade-in: fade-in 0.8s ease-out forwards;
   --animate-slide-up: slide-up 0.6s ease-out forwards;
+  --animate-sale-pulse: sale-pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
+  50% { transform: translateY(-10px); }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.2); }
-  50% { box-shadow: 0 0 40px rgba(255, 105, 180, 0.5); }
+  0%, 100% { box-shadow: 0 0 15px rgba(232, 84, 154, 0.15); }
+  50% { box-shadow: 0 0 30px rgba(232, 84, 154, 0.35); }
 }
 
 @keyframes shimmer {
@@ -75,17 +66,22 @@
 
 @keyframes bounce-slow {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-6px); }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sale-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
 }
 
 body {
@@ -101,64 +97,47 @@ h1, h2, h3, h4 {
 
 /* Utility Classes */
 .soft-glow {
-  box-shadow: 0 0 30px rgba(255, 105, 180, 0.12);
+  box-shadow: 0 4px 30px rgba(232, 84, 154, 0.1);
 }
 
 .pink-gradient {
-  background: linear-gradient(135deg, #ff69b4 0%, #ff2d78 100%);
+  background: linear-gradient(135deg, #e8549a 0%, #f8a4c8 100%);
 }
 
-.glass-card {
-  background: var(--glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-}
-
-.text-gradient-pink {
-  background: linear-gradient(135deg, #ff69b4, #ff2d78, #ff69b4);
+.pink-gradient-text {
+  background: linear-gradient(135deg, #e8549a, #c4386a);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.text-gradient-gold {
-  background: linear-gradient(135deg, #f0c040, #ffd700, #f0c040);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.sale-pulse {
-  animation: sale-pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes sale-pulse {
-  0%, 100% { 
-    box-shadow: 0 0 20px var(--sale-glow);
-    transform: scale(1);
-  }
-  50% { 
-    box-shadow: 0 0 40px var(--sale-glow), 0 0 60px rgba(255, 59, 59, 0.15);
-    transform: scale(1.02);
-  }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--surface);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--brand-pink);
-  border-radius: 3px;
+.sale-badge {
+  background: linear-gradient(135deg, #e53e6b, #e8549a);
+  color: white;
+  font-weight: 800;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--brand-pink-light);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--brand-pink-soft);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-pink);
 }

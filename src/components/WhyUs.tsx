@@ -9,13 +9,12 @@ const WhyUs = () => {
   ];
 
   return (
-    <section className="py-20 relative">
-      <div className="absolute inset-0 -z-10 bg-surface/50" />
+    <section className="py-20 bg-brand-pink-light/40">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground-custom">
           ¿Por qué todas aman estas fragancias?
         </h2>
-        <p className="text-foreground-custom/40 mb-12 max-w-2xl mx-auto">
+        <p className="text-foreground-custom/50 mb-12 max-w-2xl mx-auto">
           Traemos la magia de Victoria&apos;s Secret directo de USA a tus manos.
         </p>
         
@@ -23,11 +22,11 @@ const WhyUs = () => {
           {points.map((point, i) => (
             <div 
               key={i} 
-              className="glass-card p-6 md:p-8 rounded-[2rem] flex flex-col items-center hover:-translate-y-2 transition-all duration-300 hover:border-brand-pink/20"
+              className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-brand-pink-muted flex flex-col items-center hover:-translate-y-2 transition-all duration-300 hover:shadow-lg hover:shadow-brand-pink/10"
             >
               <span className="text-4xl mb-4">{point.icon}</span>
               <h3 className="text-base md:text-lg font-bold mb-2 text-foreground-custom">{point.title}</h3>
-              <p className="text-sm text-foreground-custom/40 leading-relaxed">{point.desc}</p>
+              <p className="text-sm text-foreground-custom/50 leading-relaxed">{point.desc}</p>
             </div>
           ))}
         </div>
