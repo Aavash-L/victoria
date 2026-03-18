@@ -1,6 +1,11 @@
 import React from 'react';
 
-const Header = () => {
+interface HeaderProps {
+  cartCount: number;
+  onCartClick: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ cartCount, onCartClick }) => {
   return (
     <>
       {/* Mother's Day Sale Top Banner */}
@@ -24,14 +29,32 @@ const Header = () => {
             <a href="#reseñas" className="hover:text-brand-pink transition-colors">Reseñas</a>
           </nav>
 
-          <a 
-            href="https://wa.me/51984134663"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pink-gradient text-white px-5 py-2 rounded-full text-sm font-semibold transition-all shadow-sm shadow-brand-pink/20 hover:shadow-md hover:shadow-brand-pink/30 active:scale-95"
-          >
-            💬 WhatsApp
-          </a>
+          <div className="flex items-center gap-3">
+            {/* Cart Button */}
+            <button
+              onClick={onCartClick}
+              className="relative p-2 rounded-full hover:bg-brand-pink-light transition-colors"
+              aria-label="Ver carrito"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-accent-rose" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+              </svg>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 pink-gradient text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-sm animate-sale-pulse">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+
+            <a 
+              href="https://wa.me/51984134663"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pink-gradient text-white px-5 py-2 rounded-full text-sm font-semibold transition-all shadow-sm shadow-brand-pink/20 hover:shadow-md hover:shadow-brand-pink/30 active:scale-95"
+            >
+              💬 WhatsApp
+            </a>
+          </div>
         </div>
       </header>
     </>

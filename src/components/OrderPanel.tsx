@@ -1,28 +1,32 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Product } from '@/app/page';
+import { CartItem } from '@/app/page';
 
 interface OrderPanelProps {
-  items: Product[];
+  items: CartItem[];
   isOpen: boolean;
   onClose: () => void;
   onRemove: (id: string) => void;
+  onUpdateQuantity: (id: string, qty: number) => void;
 }
 
-const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemove }) => {
+const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemove, onUpdateQuantity }) => {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
 
+  const totalItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
   const calculateTotal = () => {
-    const count = items.length;
+    const count = totalItemCount;
     const pairCount = Math.floor(count / 2);
     const singletonCount = count % 2;
     
-    let total = pairCount * 150;
+    let total = pairCount * 140;
     
     if (singletonCount > 0) {
+      // Use the price of the last item for the singleton
       const lastItem = items[items.length - 1];
-      total += lastItem.price;
+      total += lastItem.product.price;
     }
     
     return total;
@@ -30,7 +34,7 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
 
   const handleOrder = async (platform: 'whatsapp' | 'instagram') => {
     const total = calculateTotal();
-    const itemList = items.map((item, i) => `${i + 1}. ${item.name} (${item.type})`).join('\n');
+    const itemList = items.map((item, i) => `${i + 1}. ${item.product.name} (${item.product.type}) x${item.quantity}`).join('\n');
     const message = `Hola! ✨ Deseo pedir:\n\n${itemList}\n\nTotal: S/${total}\n\nGracias!`;
 
     try {
@@ -64,7 +68,7 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
         
         <div className="px-6 pb-4 flex-shrink-0">
           <h3 className="text-xl font-bold flex items-center justify-between text-foreground-custom">
-            Tu Pedido ✨
+            <span>Tu Pedido ✨ <span className="text-sm font-medium text-foreground-custom/40">({totalItemCount} {totalItemCount === 1 ? 'producto' : 'productos'})</span></span>
             <button onClick={onClose} className="p-2 -mr-2 text-foreground-custom/30 hover:text-foreground-custom/60 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -75,18 +79,39 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
 
         <div className="flex-1 overflow-y-auto px-6 pb-6">
           {items.map((item) => (
-            <div key={item.id} className="flex items-center justify-between py-4 border-b border-brand-pink-muted last:border-0">
-              <div className="flex flex-col pr-4">
-                <span className="font-bold text-sm leading-tight text-foreground-custom">{item.name}</span>
-                <span className="text-[9px] uppercase tracking-widest text-foreground-custom/40 mt-1">{item.type}</span>
+            <div key={item.product.id} className="flex items-center justify-between py-4 border-b border-brand-pink-muted last:border-0">
+              <div className="flex flex-col pr-4 flex-1 min-w-0">
+                <span className="font-bold text-sm leading-tight text-foreground-custom truncate">{item.product.name}</span>
+                <span className="text-[9px] uppercase tracking-widest text-foreground-custom/40 mt-1">{item.product.type}</span>
               </div>
-              <div className="flex items-center gap-4 flex-shrink-0">
-                <span className="font-bold text-accent-rose text-sm">S/{item.price}</span>
-                <button onClick={() => onRemove(item.id)} className="p-2 -mr-2 text-brand-pink-soft hover:text-sale-red transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </button>
+              <div className="flex items-center gap-3 flex-shrink-0">
+                {/* Quantity Controls */}
+                <div className="flex items-center gap-1 bg-brand-pink-light rounded-lg p-0.5">
+                  <button
+                    onClick={() => {
+                      if (item.quantity <= 1) {
+                        onRemove(item.product.id);
+                      } else {
+                        onUpdateQuantity(item.product.id, item.quantity - 1);
+                      }
+                    }}
+                    className="w-7 h-7 rounded-md bg-white text-accent-rose font-bold text-sm flex items-center justify-center shadow-sm transition-all active:scale-90"
+                  >
+                    {item.quantity <= 1 ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-sale-red" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    ) : '−'}
+                  </button>
+                  <span className="font-black text-accent-rose text-sm min-w-[1.5rem] text-center">{item.quantity}</span>
+                  <button
+                    onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
+                    className="w-7 h-7 rounded-md pink-gradient text-white font-bold text-sm flex items-center justify-center shadow-sm transition-all active:scale-90"
+                  >
+                    +
+                  </button>
+                </div>
+                <span className="font-bold text-accent-rose text-sm w-16 text-right">S/{item.product.price * item.quantity}</span>
               </div>
             </div>
           ))}
@@ -98,9 +123,9 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
               <span className="text-xs font-medium text-foreground-custom/50 uppercase tracking-wider">Total estimado</span>
               <span className="text-2xl font-black text-accent-rose">S/{calculateTotal()}</span>
             </div>
-            {items.length >= 2 && (
+            {totalItemCount >= 2 && (
               <p className="text-[10px] font-bold text-brand-pink tracking-tight uppercase flex items-center gap-1">
-                <span className="text-xs">✨</span> ¡Promo 2 por S/150 aplicada!
+                <span className="text-xs">✨</span> ¡Promo 2 por S/140 aplicada!
               </p>
             )}
           </div>

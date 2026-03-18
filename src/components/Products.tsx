@@ -6,9 +6,11 @@ import { Product } from '@/app/page';
 
 interface ProductsProps {
   onAddProduct: (product: Product) => void;
+  getQuantity: (id: string) => number;
+  onUpdateQuantity: (id: string, qty: number) => void;
 }
 
-const Products: React.FC<ProductsProps> = ({ onAddProduct }) => {
+const Products: React.FC<ProductsProps> = ({ onAddProduct, getQuantity, onUpdateQuantity }) => {
   const mists: (Product & { image: string })[] = [
     { id: "m-bv", name: "Bare Vanilla", type: "Mist", price: 85, image: "/images/IMG_8451.jpg" },
     { id: "m-ps", name: "Pure Seduction", type: "Mist", price: 85, image: "/images/IMG_8002.jpg" },
@@ -21,35 +23,57 @@ const Products: React.FC<ProductsProps> = ({ onAddProduct }) => {
     { id: "l-bv", name: "Bare Vanilla", type: "Lotion", price: 90, image: "/images/IMG_6738.jpg" },
   ];
 
-  const renderProduct = (prod: Product & { image: string }) => (
-    <div key={prod.id} className="group relative bg-white rounded-3xl overflow-hidden border border-brand-pink-muted hover:shadow-xl hover:shadow-brand-pink/10 transition-all duration-300 hover:-translate-y-1">
-      <div className="relative aspect-square overflow-hidden bg-brand-pink-light/20">
-        <Image 
-          src={prod.image} 
-          alt={prod.name} 
-          fill 
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute top-2 left-2">
-          <span className="bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider text-accent-rose shadow-sm">
-            {prod.type}
-          </span>
+  const renderProduct = (prod: Product & { image: string }) => {
+    const qty = getQuantity(prod.id);
+    return (
+      <div key={prod.id} className="group relative bg-white rounded-3xl overflow-hidden border border-brand-pink-muted hover:shadow-xl hover:shadow-brand-pink/10 transition-all duration-300 hover:-translate-y-1">
+        <div className="relative aspect-square overflow-hidden bg-brand-pink-light/20">
+          <Image 
+            src={prod.image} 
+            alt={prod.name} 
+            fill 
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+          <div className="absolute top-2 left-2">
+            <span className="bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider text-accent-rose shadow-sm">
+              {prod.type}
+            </span>
+          </div>
+        </div>
+        <div className="p-4">
+          <h3 className="font-bold text-sm mb-2 truncate text-foreground-custom">{prod.name}</h3>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-lg font-black text-accent-rose">S/{prod.price}</span>
+          </div>
+          {/* Add to Cart / Quantity Controls */}
+          {qty === 0 ? (
+            <button 
+              onClick={() => onAddProduct(prod)}
+              className="w-full pink-gradient text-white py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm shadow-brand-pink/20 active:scale-95 hover:shadow-md flex items-center justify-center gap-2"
+            >
+              <span>🛒</span> Agregar
+            </button>
+          ) : (
+            <div className="flex items-center justify-between bg-brand-pink-light rounded-xl p-1">
+              <button
+                onClick={() => onUpdateQuantity(prod.id, qty - 1)}
+                className="w-9 h-9 rounded-lg bg-white text-accent-rose font-bold text-lg flex items-center justify-center shadow-sm transition-all active:scale-90 hover:bg-brand-pink-light"
+              >
+                −
+              </button>
+              <span className="font-black text-accent-rose text-lg min-w-[2rem] text-center">{qty}</span>
+              <button
+                onClick={() => onUpdateQuantity(prod.id, qty + 1)}
+                className="w-9 h-9 rounded-lg pink-gradient text-white font-bold text-lg flex items-center justify-center shadow-sm transition-all active:scale-90"
+              >
+                +
+              </button>
+            </div>
+          )}
         </div>
       </div>
-      <div className="p-4">
-        <h3 className="font-bold text-sm mb-2 truncate text-foreground-custom">{prod.name}</h3>
-        <div className="flex items-center justify-between">
-          <span className="text-lg font-black text-accent-rose">S/{prod.price}</span>
-          <button 
-            onClick={() => onAddProduct(prod)}
-            className="pink-gradient text-white w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-sm shadow-brand-pink/20 active:scale-90 hover:shadow-md text-lg"
-          >
-            +
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <section id="productos" className="py-24">
@@ -63,7 +87,7 @@ const Products: React.FC<ProductsProps> = ({ onAddProduct }) => {
           </div>
           <div className="bg-sale-bg px-6 py-4 rounded-[2rem] border-2 border-dashed border-sale-red/30 animate-sale-pulse">
             <span className="text-sale-red font-black text-xl italic tracking-tighter">
-              ¡PROMO! 2 por S/150 🔥
+              ¡PROMO! 2 por S/140 🔥
             </span>
           </div>
         </div>
@@ -73,7 +97,7 @@ const Products: React.FC<ProductsProps> = ({ onAddProduct }) => {
             <span className="w-8 h-1 pink-gradient rounded-full" />
             Body Mists
           </h3>
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-5">
             {mists.map(renderProduct)}
           </div>
         </div>

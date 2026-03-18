@@ -18,17 +18,51 @@ export type Product = {
   price: number;
 };
 
+export type CartItem = {
+  product: Product;
+  quantity: number;
+};
+
 export default function Home() {
-  const [cart, setCart] = useState<Product[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [isOrderPanelOpen, setIsOrderPanelOpen] = useState(false);
 
+  const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
   const addToCart = (product: Product) => {
-    setCart([...cart, { ...product, id: `${product.id}-${Date.now()}` }]);
+    setCart((prev) => {
+      const existing = prev.find((item) => item.product.id === product.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.product.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, { product, quantity: 1 }];
+    });
     setIsOrderPanelOpen(true);
   };
 
   const removeFromCart = (id: string) => {
-    setCart(cart.filter((item) => item.id !== id));
+    setCart((prev) => prev.filter((item) => item.product.id !== id));
+  };
+
+  const updateQuantity = (id: string, newQty: number) => {
+    if (newQty <= 0) {
+      removeFromCart(id);
+      return;
+    }
+    setCart((prev) =>
+      prev.map((item) =>
+        item.product.id === id ? { ...item, quantity: newQty } : item
+      )
+    );
+  };
+
+  const getQuantity = (id: string) => {
+    const item = cart.find((item) => item.product.id === id);
+    return item ? item.quantity : 0;
   };
 
   // Prevent background scroll when panel is open
@@ -42,18 +76,36 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background-custom">
-      <Header />
+      <Header
+        cartCount={totalItemCount}
+        onCartClick={() => {
+          if (cart.length > 0) setIsOrderPanelOpen(true);
+        }}
+      />
       <Hero />
-      <FlashSale />
+      <FlashSale onAddProduct={addToCart} getQuantity={getQuantity} onUpdateQuantity={updateQuantity} />
       <WhyUs />
-      <Products onAddProduct={addToCart} />
+      <Products onAddProduct={addToCart} getQuantity={getQuantity} onUpdateQuantity={updateQuantity} />
       <Trust />
       <Reviews />
-      
+
+      {/* Floating Cart Button for Mobile */}
+      {cart.length > 0 && !isOrderPanelOpen && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[90%] md:hidden transition-transform active:scale-95">
+          <button
+            onClick={() => setIsOrderPanelOpen(true)}
+            className="w-full flex items-center justify-center gap-3 pink-gradient text-white py-4 rounded-2xl font-bold shadow-2xl shadow-brand-pink/30"
+          >
+            <span className="text-xl">🛒</span>
+            Ver Pedido ({totalItemCount} {totalItemCount === 1 ? 'producto' : 'productos'})
+          </button>
+        </div>
+      )}
+
       {/* Floating CTA for Mobile (Shows if cart is empty) */}
       {cart.length === 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[90%] md:hidden transition-transform active:scale-95">
-          <a 
+          <a
             href="https://wa.me/51984134663"
             target="_blank"
             rel="noopener noreferrer"
@@ -66,11 +118,12 @@ export default function Home() {
       )}
 
       {/* Order Panel / Summary */}
-      <OrderPanel 
-        items={cart} 
-        isOpen={isOrderPanelOpen} 
-        onClose={() => setIsOrderPanelOpen(false)} 
+      <OrderPanel
+        items={cart}
+        isOpen={isOrderPanelOpen}
+        onClose={() => setIsOrderPanelOpen(false)}
         onRemove={removeFromCart}
+        onUpdateQuantity={updateQuantity}
       />
 
       <Footer />
