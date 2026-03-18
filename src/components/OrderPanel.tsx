@@ -14,19 +14,22 @@ interface OrderPanelProps {
 const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemove, onUpdateQuantity }) => {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
 
-  const totalItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  // Ensure totalItemCount is always a safe number
+  const totalItemCount = items.reduce((sum, item) => sum + Number(item.quantity), 0);
 
   const calculateTotal = () => {
     const count = totalItemCount;
+    if (count === 0) return 0;
+
     const pairCount = Math.floor(count / 2);
     const singletonCount = count % 2;
     
     let total = pairCount * 140;
     
     if (singletonCount > 0) {
-      // Use the price of the last item for the singleton
+      // Find the last item's price for the one that doesn't fit in a pair
       const lastItem = items[items.length - 1];
-      total += lastItem.product.price;
+      total += (lastItem ? lastItem.product.price : 0);
     }
     
     return total;
@@ -57,6 +60,8 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
 
   if (!items.length) return null;
 
+  const totalAmount = calculateTotal();
+
   return (
     <div className={`fixed inset-0 z-[100] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
       {/* Backdrop */}
@@ -68,7 +73,7 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
         
         <div className="px-6 pb-4 flex-shrink-0">
           <h3 className="text-xl font-bold flex items-center justify-between text-foreground-custom">
-            <span>Tu Pedido ✨ <span className="text-sm font-medium text-foreground-custom/40">({totalItemCount} {totalItemCount === 1 ? 'producto' : 'productos'})</span></span>
+            <span>Your Order ✨ <span className="text-sm font-medium text-foreground-custom/40">({totalItemCount} {totalItemCount === 1 ? 'product' : 'products'})</span></span>
             <button onClick={onClose} className="p-2 -mr-2 text-foreground-custom/30 hover:text-foreground-custom/60 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -89,15 +94,16 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
                 <div className="flex items-center gap-1 bg-brand-pink-light rounded-lg p-0.5">
                   <button
                     onClick={() => {
-                      if (item.quantity <= 1) {
+                      const currentQty = Number(item.quantity);
+                      if (currentQty <= 1) {
                         onRemove(item.product.id);
                       } else {
-                        onUpdateQuantity(item.product.id, item.quantity - 1);
+                        onUpdateQuantity(item.product.id, currentQty - 1);
                       }
                     }}
                     className="w-7 h-7 rounded-md bg-white text-accent-rose font-bold text-sm flex items-center justify-center shadow-sm transition-all active:scale-90"
                   >
-                    {item.quantity <= 1 ? (
+                    {Number(item.quantity) <= 1 ? (
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-sale-red" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
@@ -105,7 +111,7 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
                   </button>
                   <span className="font-black text-accent-rose text-sm min-w-[1.5rem] text-center">{item.quantity}</span>
                   <button
-                    onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
+                    onClick={() => onUpdateQuantity(item.product.id, Number(item.quantity) + 1)}
                     className="w-7 h-7 rounded-md pink-gradient text-white font-bold text-sm flex items-center justify-center shadow-sm transition-all active:scale-90"
                   >
                     +
@@ -120,12 +126,12 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
         <div className="px-6 py-6 bg-brand-pink-light/50 border-t border-brand-pink-muted rounded-t-3xl flex-shrink-0">
           <div className="bg-white p-4 rounded-2xl mb-6 border border-brand-pink-muted shadow-sm">
             <div className="flex justify-between items-center mb-1">
-              <span className="text-xs font-medium text-foreground-custom/50 uppercase tracking-wider">Total estimado</span>
-              <span className="text-2xl font-black text-accent-rose">S/{calculateTotal()}</span>
+              <span className="text-xs font-medium text-foreground-custom/50 uppercase tracking-wider">Estimated Total</span>
+              <span className="text-2xl font-black text-accent-rose">S/{totalAmount}</span>
             </div>
             {totalItemCount >= 2 && (
               <p className="text-[10px] font-bold text-brand-pink tracking-tight uppercase flex items-center gap-1">
-                <span className="text-xs">✨</span> ¡Promo 2 por S/140 aplicada!
+                <span className="text-xs">✨</span> PROMO 2 FOR S/140 APPLIED!
               </p>
             )}
           </div>
@@ -137,7 +143,7 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
               className="flex items-center justify-center gap-3 bg-[#25D366] text-white py-4 rounded-2xl font-bold text-sm transition-all active:scale-95 shadow-md shadow-[#25D366]/20 relative overflow-hidden"
             >
               <span className="text-xl">💬</span>
-              {copyStatus === 'copied' ? '¡PEDIDO COPIADO!' : 'WHATSAPP'}
+              {copyStatus === 'copied' ? 'ORDER COPIED!' : 'WHATSAPP'}
             </button>
             
             <button 
@@ -146,11 +152,11 @@ const OrderPanel: React.FC<OrderPanelProps> = ({ items, isOpen, onClose, onRemov
               className="flex items-center justify-center gap-3 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white py-4 rounded-2xl font-bold text-sm transition-all active:scale-95 shadow-md relative overflow-hidden"
             >
               <span className="text-xl">📸</span>
-              {copyStatus === 'copied' ? '¡COPIADO!' : 'INSTAGRAM'}
+              {copyStatus === 'copied' ? 'COPIED!' : 'INSTAGRAM'}
             </button>
           </div>
           <p className="text-[9px] text-center mt-4 text-foreground-custom/30 uppercase tracking-[0.2em] font-black">
-            Se copiará tu pedido automáticamente
+            Order info will be copied automatically
           </p>
         </div>
       </div>

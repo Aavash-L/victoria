@@ -27,7 +27,7 @@ export default function Home() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isOrderPanelOpen, setIsOrderPanelOpen] = useState(false);
 
-  const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItemCount = cart.reduce((sum, item) => sum + Number(item.quantity), 0);
 
   const addToCart = (product: Product) => {
     setCart((prev) => {
@@ -35,7 +35,7 @@ export default function Home() {
       if (existing) {
         return prev.map((item) =>
           item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: Number(item.quantity) + 1 }
             : item
         );
       }
@@ -55,14 +55,14 @@ export default function Home() {
     }
     setCart((prev) =>
       prev.map((item) =>
-        item.product.id === id ? { ...item, quantity: newQty } : item
+        item.product.id === id ? { ...item, quantity: Number(newQty) } : item
       )
     );
   };
 
   const getQuantity = (id: string) => {
     const item = cart.find((item) => item.product.id === id);
-    return item ? item.quantity : 0;
+    return item ? Number(item.quantity) : 0;
   };
 
   // Prevent background scroll when panel is open
@@ -97,7 +97,7 @@ export default function Home() {
             className="w-full flex items-center justify-center gap-3 pink-gradient text-white py-4 rounded-2xl font-bold shadow-2xl shadow-brand-pink/30"
           >
             <span className="text-xl">🛒</span>
-            Ver Pedido ({totalItemCount} {totalItemCount === 1 ? 'producto' : 'productos'})
+            View Order ({totalItemCount} {totalItemCount === 1 ? 'product' : 'products'})
           </button>
         </div>
       )}
@@ -112,7 +112,7 @@ export default function Home() {
             className="flex items-center justify-center gap-3 bg-[#25D366] text-white py-4 rounded-2xl font-bold shadow-2xl shadow-[#25D366]/30"
           >
             <span className="text-xl">💬</span>
-            Ordenar por WhatsApp
+            Order via WhatsApp
           </a>
         </div>
       )}
